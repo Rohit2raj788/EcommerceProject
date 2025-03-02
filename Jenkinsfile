@@ -14,20 +14,24 @@ pipeline {
             }
         }
 
-       stage('Verify Test Cases') {
+     stage('Verify Test Cases') {
     steps {
         script {
             bat 'git fetch --all'
 
-            // Ensure 'main' branch exists in remote
+            // Check if 'main' branch exists remotely
             def mainExists = bat(script: 'git branch -r | findstr "origin/main"', returnStdout: true).trim()
 
             if (mainExists) {
-                // Check differences and prevent false errors
-                def missingTests = bat(script: 'git diff --quiet origin/main origin/develop -- src/test/java/testCases/ || echo "CHANGED"', returnStdout: true).trim()
+                // Print all files inside test directory for debugging
+                bat 'dir /s /b src\\test\\java\\testCases\\ > test_files_list.txt'
+                bat 'git ls-tree -r origin/develop --name-only > develop_files.txt'
+                bat 'git ls-tree -r origin/main --name-only > main_files.txt'
+
+                def missingTests = bat(script: 'git diff --name-only origin/main origin/develop -- src/test/java/testCases/', returnStdout: true).trim()
                 
-                if (missingTests.contains("CHANGED")) {
-                    echo "❌ ERROR: Test cases changed/missing. Please check."
+                if (missingTests) {
+                    echo "❌ ERROR: Test cases changed/missing. Please check:\n$missingTests"
                     error "Build failed due to missing test cases."
                 } else {
                     echo "✅ No missing test cases. Proceeding with the build."
@@ -38,6 +42,7 @@ pipeline {
         }
     }
 }
+
 
 
 
