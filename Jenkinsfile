@@ -19,18 +19,26 @@ pipeline {
         script {
             bat 'git fetch --all'
 
-            // Run git diff to compare test cases between main and develop
-            def missingTests = bat(script: 'git diff origin/main origin/develop --name-only -- src/test/java/testCases/', returnStdout: true).trim()
+            // Ensure 'main' branch exists in remote
+            def mainExists = bat(script: 'git branch -r | findstr "origin/main"', returnStdout: true).trim()
 
-            if (missingTests) {
-                echo "❌ ERROR: Missing Test Cases in develop:\n$missingTests"
-                error "Build failed due to missing test cases."
+            if (mainExists) {
+                // Check differences and prevent false errors
+                def missingTests = bat(script: 'git diff --quiet origin/main origin/develop -- src/test/java/testCases/ || echo "CHANGED"', returnStdout: true).trim()
+                
+                if (missingTests.contains("CHANGED")) {
+                    echo "❌ ERROR: Test cases changed/missing. Please check."
+                    error "Build failed due to missing test cases."
+                } else {
+                    echo "✅ No missing test cases. Proceeding with the build."
+                }
             } else {
-                echo "✅ All Test Cases Exist"
+                echo "⚠️ Warning: origin/main branch not found. Skipping test case verification."
             }
         }
     }
 }
+
 
 
 
