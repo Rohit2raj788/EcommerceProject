@@ -29,7 +29,7 @@ pipeline {
 
         stage('Run Selenium Tests') {
             steps {
-                sh "mvn clean test"
+                bat 'mvn clean test'
             }
         }
 
