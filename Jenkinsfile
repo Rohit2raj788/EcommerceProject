@@ -14,30 +14,24 @@ pipeline {
             }
         }
 
-        stage('Verify Test Cases') {
+       stage('Verify Test Cases') {
     steps {
         script {
-            // Fetch latest changes from remote
             bat 'git fetch --all'
-            
-            // Check if 'main' branch exists in remote
-            def mainExists = bat(script: 'git branch -r | findstr "origin/main"', returnStdout: true).trim()
-            
-            if (mainExists) {
-                // Compare changes between main and develop
-                def missingTests = bat(script: 'git diff origin/main origin/develop --name-only -- src/test/java/testCases/', returnStdout: true).trim()
-                
-                if (missingTests) {
-                    error "❌ ERROR: Missing Test Cases in develop:\n$missingTests"
-                } else {
-                    echo "✅ All Test Cases Exist"
-                }
+
+            // Run git diff to compare test cases between main and develop
+            def missingTests = bat(script: 'git diff origin/main origin/develop --name-only -- src/test/java/testCases/', returnStdout: true).trim()
+
+            if (missingTests) {
+                echo "❌ ERROR: Missing Test Cases in develop:\n$missingTests"
+                error "Build failed due to missing test cases."
             } else {
-                echo "⚠️ Warning: origin/main branch not found. Skipping test case verification."
+                echo "✅ All Test Cases Exist"
             }
         }
     }
 }
+
 
 
         stage('Run Selenium Tests') {
