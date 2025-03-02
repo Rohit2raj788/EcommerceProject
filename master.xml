@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="All Test Suite">
+    <test verbose="2" preserve-order="true" name="D:/desktop/Selenium/EcommerceProject">
+        <parameter name="browsers" value="chrome"></parameter>
+        <parameter name="operatingSystem" value="Windows"></parameter>
+        <classes>
+            <class name="testCases.TC001_signup"></class>
+            <class name="testCases.TC002_Login">
+            </class>
+            <class name="testCases.TC003_Search"></class>
+        </classes>
+
+    </test>
+</suite>
