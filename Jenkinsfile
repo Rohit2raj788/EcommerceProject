@@ -2,8 +2,8 @@ pipeline {
     agent any  // Use any available Jenkins agent
 
     environment {
-        MAVEN_HOME = "/usr/share/maven"  // Set Maven path if needed
-        PATH = "$MAVEN_HOME/bin:$PATH"
+        MAVEN_HOME = "C:\\Program Files\\Apache\\maven"  // Adjust Maven path for Windows
+        PATH = "${MAVEN_HOME}\\bin;${env.PATH}"
     }
 
     stages {
@@ -17,7 +17,8 @@ pipeline {
         stage('Verify Test Cases') {
             steps {
                 script {
-                    def missingTests = sh(script: "git diff main develop --name-only -- src/test/java/testCases/", returnStdout: true).trim()
+                    bat 'git fetch origin'  // Ensure latest changes
+                    def missingTests = bat(script: 'git diff origin/main origin/develop --name-only -- src/test/java/testCases/', returnStdout: true).trim()
                     if (missingTests) {
                         error "❌ ERROR: Missing Test Cases in develop: \n$missingTests"
                     } else {
@@ -29,7 +30,7 @@ pipeline {
 
         stage('Run Selenium Tests') {
             steps {
-                bat 'mvn clean test'
+                bat '"C:\\Program Files\\Apache\\maven\\bin\\mvn.cmd" clean test'
             }
         }
 
