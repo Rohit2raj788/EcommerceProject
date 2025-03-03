@@ -18,7 +18,8 @@ public class ExtentReportUtils {
     private static ExtentReports extent;
     private static ExtentTest test;
     private static ExtentSparkReporter sparkReporter;
-    private static String reportPath = "reports/ExtentReport_" + getTimestamp() + ".html";
+    private static String reportPath = System.getProperty("user.dir") + "/reports/ExtentReport_" + getTimestamp() + ".html";
+
 
     // ✅ Initialize Extent Report
     public static void initReport() {
