@@ -31,10 +31,32 @@ pipeline {
         }
 
         stage('Publish Extent Reports') {
-            steps {
-                // Add code here to publish Extent Reports if required
-                echo "Publishing Extent Reports..."
+    steps {
+        script {
+            def localReportPath = "reports"  // Change this if needed
+            def jenkinsReportPath = "target/extent-reports"
+
+            // Ensure target directory exists
+            bat "mkdir ${jenkinsReportPath}"
+
+            // Copy reports from the local directory to Jenkins workspace
+            bat "xcopy /E /Y ${localReportPath} ${jenkinsReportPath}"
+
+            if (fileExists("${jenkinsReportPath}/ExtentReport.html")) {
+                echo "✅ Extent Report found, publishing..."
+                publishHTML([
+                    reportDir: jenkinsReportPath,
+                    reportFiles: 'ExtentReport.html',
+                    reportName: 'Extent Reports',
+                    keepAll: true
+                ])
+            } else {
+                echo "❌ Extent Report NOT found. Check test execution."
+                error("Extent Report not generated.")
             }
         }
+    }
+}
+
     }
 }
