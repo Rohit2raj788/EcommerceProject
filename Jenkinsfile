@@ -33,8 +33,8 @@ pipeline {
         stage('Publish Extent Reports') {
     steps {
         script {
-            def localReportPath = "reports"  // Update this if needed
-            def jenkinsReportPath = "target\\extent-reports"  // Use double backslashes
+            def localReportPath = "reports"
+            def jenkinsReportPath = "target\\extent-reports"  
 
             // Ensure target directory exists
             bat "mkdir ${jenkinsReportPath}"
@@ -43,10 +43,11 @@ pipeline {
             bat "xcopy /E /Y ${localReportPath} ${jenkinsReportPath}"
 
             // Verify if Extent Report exists before publishing
-            if (fileExists("${jenkinsReportPath}\\ExtentReport_*.html")) {
+            def reportFiles = findFiles(glob: 'target/extent-reports/*.html')
+            if (reportFiles.length > 0) {
                 echo "✅ Extent Report found, publishing..."
                 publishHTML([
-                    reportDir: jenkinsReportPath,
+                    reportDir: 'target/extent-reports',
                     reportFiles: 'ExtentReport_*.html',
                     reportName: 'Extent Reports',
                     keepAll: true
@@ -58,6 +59,7 @@ pipeline {
         }
     }
 }
+
 
     }
 }
