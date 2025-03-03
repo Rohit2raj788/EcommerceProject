@@ -26,7 +26,7 @@ pipeline {
 
         stage('Run Selenium Tests') {
             steps {
-                bat 'mvn test -DsuiteXmlFile=testng.xml'
+                bat 'mvn test -DsuiteXmlFile=master.xml'
             }
         }
 
