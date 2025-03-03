@@ -33,20 +33,21 @@ pipeline {
         stage('Publish Extent Reports') {
     steps {
         script {
-            def localReportPath = "reports"  // Change this if needed
-            def jenkinsReportPath = "target/extent-reports"
+            def localReportPath = "reports"  // Update this if needed
+            def jenkinsReportPath = "target\\extent-reports"  // Use double backslashes
 
             // Ensure target directory exists
             bat "mkdir ${jenkinsReportPath}"
 
-            // Copy reports from the local directory to Jenkins workspace
+            // Copy reports from local to Jenkins workspace
             bat "xcopy /E /Y ${localReportPath} ${jenkinsReportPath}"
 
-            if (fileExists("${jenkinsReportPath}/ExtentReport.html")) {
+            // Verify if Extent Report exists before publishing
+            if (fileExists("${jenkinsReportPath}\\ExtentReport_*.html")) {
                 echo "✅ Extent Report found, publishing..."
                 publishHTML([
                     reportDir: jenkinsReportPath,
-                    reportFiles: 'ExtentReport.html',
+                    reportFiles: 'ExtentReport_*.html',
                     reportName: 'Extent Reports',
                     keepAll: true
                 ])
