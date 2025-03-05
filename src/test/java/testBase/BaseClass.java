@@ -3,6 +3,7 @@ import java.security.SecureRandom;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -23,6 +24,7 @@ public class BaseClass {
     public Logger logger;
     public  Properties po;
     public Actions act;
+    public JavascriptExecutor javascriptExecutor;
 
     @BeforeClass
     @Parameters({"browsers", "operatingSystem"})
@@ -40,6 +42,7 @@ public class BaseClass {
             default: System.out.println("Invalid Browser");return;
         }
         act= new Actions(driver);
+        javascriptExecutor= (JavascriptExecutor)driver;
 
         driver.manage().deleteAllCookies();
         driver.manage().window().maximize();
