@@ -49,7 +49,7 @@ public class MacbookSearchPage extends BasePage{
     }
     public WebElement getMacbook(){return Macbook;}
     public void ClickMacbookAddtoCart(){
-        lnk_MaacbookAddtoCart.click();
+        getWait(10).until(ExpectedConditions.visibilityOf(lnk_MaacbookAddtoCart)).click();
     }
     public void Click_Cart(){
         getWait(10).until(ExpectedConditions.visibilityOf(addtoCartSuccessMsg));
