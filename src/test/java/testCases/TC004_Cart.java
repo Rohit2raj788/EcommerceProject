@@ -17,6 +17,8 @@ public class TC004_Cart extends BaseClass {
         MacbookSearchPage mp= new MacbookSearchPage(driver);
         javascriptExecutor.executeScript("arguments[0].scrollIntoView(true);",mp.getMacbook());
         mp.ClickMacbookAddtoCart();
+        javascriptExecutor.executeScript("window.scrollTo(0, 0);");
+
         mp.Click_Cart();
         System.out.println(mp.getCartProductName());
         SoftAssert sa= new SoftAssert();
